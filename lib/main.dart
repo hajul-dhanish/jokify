@@ -1,33 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import 'package:q2smart/data/sharedPref/SharedPref.dart';
-import 'package:q2smart/view_model/auth/LoginVM.dart';
-
-import '../view/flutter_flow/internationalization.dart';
 import 'data/Env/base_config.dart';
 import 'index.dart';
-import 'repository/token/TokenRepository.dart';
-import 'utils/global.dart';
-import 'view/flutter_flow/flutter_flow_theme.dart';
-import 'view/flutter_flow/nav/nav.dart';
-import 'view_model/auth/UserInfoVM.dart';
-import 'view_model/banner/BannerVM.dart';
-import 'view_model/cart/CartItemVM.dart';
+import 'package:provider/provider.dart';
+import 'view/plugin/flutter_flow_theme.dart';
+import 'view/plugin/internationalization.dart';
+import 'view/plugin/nav/nav.dart';
 import 'view_model/dashboard/DashboardVM.dart';
-import 'view_model/products/ProductsListVM.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  UserSharedPreferences().initSharedPreferences();
   const String environment = String.fromEnvironment(
     'ENVIRONMENT',
     defaultValue: Environment.DEV,
   );
   Environment().initConfig(environment);
-  // userInfoVM.getUserInfo();
   runApp(MyApp());
 }
 
@@ -49,27 +36,18 @@ class _MyAppState extends State<MyApp> {
 
   bool displaySplashImage = true;
 
-  final _myTokenRepo = TokenRepository();
-
   @override
   void initState() {
     super.initState();
-    getToken();
     _appStateNotifier = AppStateNotifier();
     _router = createRouter(_appStateNotifier);
 
     Future.delayed(
-      Duration(seconds: 1),
+      const Duration(seconds: 1),
       () => setState(
         () => _appStateNotifier.stopShowingSplashImage(),
       ),
     );
-  }
-
-  getToken() async {
-    await _myTokenRepo.getToken().then((value) {
-      globalAuthToken = value.data!.result![0][0]['hashvalue'];
-    }).onError((error, stackTrace) {});
   }
 
   void setLocale(String language) {
@@ -88,35 +66,12 @@ class _MyAppState extends State<MyApp> {
           value: DashBoardVM(),
           child: null,
         ),
-        ChangeNotifierProvider.value(
-          value: ProductsListVM(),
-          child: null,
-        ),
-        ChangeNotifierProvider.value(
-          value: BannerVM(),
-          child: null,
-        ),
-        ChangeNotifierProvider.value(
-          value: LoginVM(),
-          child: null,
-        ),
-        ChangeNotifierProvider.value(
-          value: CartItemVM(),
-          child: null,
-        ),
-        ChangeNotifierProvider.value(
-          value: UserInfoVM(),
-          child: null,
-        ),
       ],
       child: Consumer(builder: (context, theme, _) {
         return MaterialApp.router(
-          title: 'q2sMart',
-          localizationsDelegates: [
+          title: 'Jokify',
+          localizationsDelegates: const [
             FFLocalizationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
           ],
           locale: _locale,
           supportedLocales: const [Locale('en', '')],
@@ -128,7 +83,7 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor:
                     FlutterFlowTheme.of(context).secondaryBackground,
               ),
-              appBarTheme: AppBarTheme(
+              appBarTheme: const AppBarTheme(
                 // toolbarHeight: 0.0,
                 systemOverlayStyle:
                     SystemUiOverlayStyle(statusBarBrightness: Brightness.light),
@@ -157,7 +112,7 @@ class NavBarPage extends StatefulWidget {
 
 /// This is the private State class that goes with NavBarPage.
 class _NavBarPageState extends State<NavBarPage> {
-  String _currentPageName = 'dashBoard';
+  String _currentPageName = 'dashBoardScreen';
   late Widget? _currentPage;
 
   @override
@@ -170,12 +125,9 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   Widget build(BuildContext context) {
     final tabs = {
-      'dashBoard': DashBoardWidget(),
-      // 'ProductDetails': ProductDetailsWidget(),
-      'productItemsPage': ProductItemsPageWidget(),
-      'offerPage': OfferScreen(),
-      'Brand': BrandPageWidget(),
-      'contactUs': ContactusWidget(),
+      'dashBoardScreen': const DashBoardWidget(),
+      'optionScreen': const OptionScreen(),
+      'feedScreen': const FeedScreen(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
     return Scaffold(
@@ -193,38 +145,23 @@ class _NavBarPageState extends State<NavBarPage> {
         showUnselectedLabels: false,
         type: BottomNavigationBarType.fixed,
         enableFeedback: true,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/images/icon-home.svg"),
-            activeIcon: SvgPicture.asset("assets/images/icon-home-fill.svg"),
+        items: const <BottomNavigationBarItem>[
+           BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            activeIcon: Icon(Icons.home_outlined),
             label: 'Home',
             tooltip: '',
           ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/images/icon-category.svg"),
-            activeIcon:
-                SvgPicture.asset("assets/images/icon-category-fill.svg"),
-            label: 'Product',
+           BottomNavigationBarItem(
+            icon: Icon(Icons.feed),
+            activeIcon: Icon(Icons.feed_outlined),
+            label: 'Feed',
             tooltip: '',
           ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/images/icon-mybasket.svg"),
-            activeIcon:
-                SvgPicture.asset("assets/images/icon-mybasket-fill.svg"),
-            label: 'Offers',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/images/Icon feather-bell.svg"),
-            activeIcon:
-                SvgPicture.asset("assets/images/icon-feather-bell-fill.svg"),
-            label: 'Branding',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/images/icon-user.svg"),
-            activeIcon: SvgPicture.asset("assets/images/icon-user-fill.svg"),
-            label: 'contact Us',
+           BottomNavigationBarItem(
+            icon: Icon(Icons.person_off),
+            activeIcon: Icon(Icons.person_off_outlined),
+            label: 'Account',
             tooltip: '',
           ),
         ],

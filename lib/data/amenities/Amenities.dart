@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
-import 'package:q2smart/data/amenities/BaseAmenities.dart';
 
-class Amenities extends BaseAmenities
+class Amenities 
     with ChangeNotifier, DiagnosticableTreeMixin {
   Future connectivityChecker(context) async {
     try {

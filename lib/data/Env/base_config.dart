@@ -8,7 +8,7 @@ abstract class BaseConfig {
 
 class DevConfig implements BaseConfig {
   String get apiHost =>
-      "https://uatq2s.shriramvalue.me/UATQ2SService/DealerStoreService.svc/";
+      "https://63c3d747a9085635752d1dfe.mockapi.io/";
 
   bool get reportErrors => false;
 
@@ -21,7 +21,7 @@ class DevConfig implements BaseConfig {
 
 class StagingConfig implements BaseConfig {
   String get apiHost =>
-      "https://uatq2s.shriramvalue.me/UATQ2SService/DealerStoreService.svc/";
+      "";
 
   bool get reportErrors => true;
 
@@ -29,12 +29,12 @@ class StagingConfig implements BaseConfig {
 
   bool get useHttps => true;
 
-  String get imgBaseUrl => 'https://uatq2s.shriramvalue.me/UATQ2SAdmin/CommonFunctions/OAS_ImageDisplay.ashx?Path=';
+  String get imgBaseUrl => '';
 }
 
 class ProdConfig implements BaseConfig {
   String get apiHost =>
-      "https://uatq2s.shriramvalue.me/UATQ2SService/DealerStoreService.svc/";
+      "";
 
   bool get reportErrors => true;
 
@@ -42,7 +42,7 @@ class ProdConfig implements BaseConfig {
 
   bool get useHttps => true;
 
-  String get imgBaseUrl => 'https://uatq2s.shriramvalue.me/UATQ2SAdmin/CommonFunctions/OAS_ImageDisplay.ashx?Path=';
+  String get imgBaseUrl => '';
 }
 
 class Environment {

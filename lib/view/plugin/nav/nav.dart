@@ -31,11 +31,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context) => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    color: FlutterFlowTheme.of(context).whiteColor,
-                    child: Image.asset(
-                      'assets/images/quick2shelfLogo.png',
-                      fit: BoxFit.fitWidth,
+                  Center(
+                    child: Container(
+                      color: FlutterFlowTheme.of(context).whiteColor,
+                      child: const Text("Welcome"),
                     ),
                   ),
                 ],
@@ -48,11 +47,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/',
           builder: (context, _) => appStateNotifier.showSplashImage
               ? Builder(
-                  builder: (context) => Container(
-                    color: FlutterFlowTheme.of(context).whiteColor,
-                    child: Image.asset(
-                      'assets/images/quick2shelfLogo.png',
-                      fit: BoxFit.fitWidth,
+                  builder: (context) => Center(
+                    child: Container(
+                      color: FlutterFlowTheme.of(context).whiteColor,
+                      child: const Text("Welcome"),
                     ),
                   ),
                 )

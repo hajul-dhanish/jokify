@@ -1,10 +1,11 @@
 import 'package:flutter/scheduler.dart';
+import 'package:jokify/data/remote/response/Status.dart';
 import 'package:jokify/res/AppContextExtension.dart';
+import 'package:jokify/utils/Utils.dart';
 import 'package:provider/provider.dart';
 import '../plugin/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import '../../view_model/dashboard/DashboardVM.dart';
-// import '../components/custom_view_all_widget.dart';
 
 class DashBoardWidget extends StatefulWidget {
   const DashBoardWidget({Key? key}) : super(key: key);
@@ -14,51 +15,69 @@ class DashBoardWidget extends StatefulWidget {
 }
 
 class _DashBoardWidgetState extends State<DashBoardWidget> {
-  List<String>? topCatListingDecoded;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  PageController? pageViewController;
-  final textFieldKey = GlobalKey();
-  TextEditingController? textController;
-  String? textFieldSelectedOption;
-  Future? topCatListing;
+  Future? accListing;
 
   Future _obtainTopCategory() async {
     return await Provider.of<DashBoardVM>(context, listen: false)
-        .fetchTopCategory();
+        .fetchAccList();
   }
-
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-    topCatListing = _obtainTopCategory();
+      accListing = _obtainTopCategory();
     });
-    textController = TextEditingController();
   }
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
     final status = Provider.of<DashBoardVM>(context, listen: true);
     var customStyle = FlutterFlowTheme.of(context);
     var abstractString = context.resources.strings;
-    super.widget.createState();
+  
+        Provider.of<DashBoardVM>(context, listen: false).fetchAccList();
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.0,
-      ),
-      key: scaffoldKey,
-      body: const Center(child: Text("Hi :)"),),
-    );
+        appBar: AppBar(
+          toolbarHeight: 0.0,
+        ),
+        key: scaffoldKey,
+        body: Consumer<DashBoardVM>(
+          builder: (context, value, child) {
+            switch (value.accListMain.status) {
+              case Status.LOADING:
+                return Utils().spikeLoader(context);  
+
+              case Status.ERROR:
+                return Center(
+                    child: Text(value.accListMain.message.toString()));
+
+              case Status.COMPLETED:
+                return FutureBuilder(
+                    future: accListing,
+                    builder: (BuildContext context, snapshot) {
+                      return ListView.builder(
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            dense: true,
+                            contentPadding: const EdgeInsets.all(10),
+                            leading: CircleAvatar(
+                              child: Image.network(
+                                value.accListMain.data!.avatar.toString(),
+                              ),
+                            ),
+                            title:
+                                Text(value.accListMain.data!.userName.toString()),
+                          );
+                        }
+                      );
+                    });
+
+              default:
+                return const Text("default");
+            }
+          },
+        ));
   }
-
- 
 }
-
